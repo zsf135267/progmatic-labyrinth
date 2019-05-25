@@ -10,8 +10,7 @@ import com.progmatic.labyrinthproject.enums.CellType;
 public class Coordinate {
     
     private final int row, col;
-    private CellType cellType;
-
+    
     public Coordinate(int col, int row) {
         this.row = row;
         this.col = col;
@@ -23,10 +22,6 @@ public class Coordinate {
 
     public int getCol() {
         return col;
-    }
-
-    public CellType getCellType() {
-        return cellType;
     }
 
     @Override

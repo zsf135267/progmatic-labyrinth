@@ -18,11 +18,10 @@ import java.util.Scanner;
 public class LabyrinthImpl implements Labyrinth {
     private int width;
     private int height;
-    private CellType ct;
-    private Coordinate[][] labyrinth;
+    private CellType[][] labyrinth;
 
     public LabyrinthImpl() {
-        loadLabyrinthFile("labyrinth1.txt");
+        
     }
 
     @Override
@@ -31,26 +30,29 @@ public class LabyrinthImpl implements Labyrinth {
             Scanner sc = new Scanner(new File(fileName));
             width = Integer.parseInt(sc.nextLine());
             height = Integer.parseInt(sc.nextLine());
+            
+            setSize(width, height);
 
             for (int hh = 0; hh < height; hh++) {
                 String line = sc.nextLine();
                 for (int ww = 0; ww < width; ww++) {
                     switch (line.charAt(ww)) {
                         case 'W':
-                            this.ct = CellType.WALL;
+                            setCellType(new Coordinate(ww, hh), CellType.WALL);
                             break;
                         case 'E':
-                            this.ct = CellType.END;
+                            setCellType(new Coordinate(ww, hh), CellType.END);
                             break;
                         case 'S':
-                            this.ct = CellType.START;
+                            setCellType(new Coordinate(ww, hh), CellType.START);
                             break;
                     }
-                    this.labyrinth[ww][hh] = new Coordinate(ww,hh);
                 }
             }
         } catch (FileNotFoundException | NumberFormatException ex) {
             System.out.println(ex.toString());
+        } catch (CellException e){
+            System.out.println(e);
         }
     }
 
@@ -66,10 +68,10 @@ public class LabyrinthImpl implements Labyrinth {
     
     @Override
     public CellType getCellType(Coordinate c) throws CellException {
-        if(c.getRow() >= height || c.getRow() < 0 || c.getCol() >= width || c.getCol() < 0){
+        if(c.getRow() >= height|| c.getRow() < 0 || c.getCol() >= width || c.getCol() < 0){
             throw new CellException(c, "This coordinate is not a point of the labyrinth.");
         }
-        return c.getCellType();
+        return labyrinth[c.getCol()][c.getRow()];
     }
 
     @Override
@@ -82,10 +84,8 @@ public class LabyrinthImpl implements Labyrinth {
     public void setCellType(Coordinate c, CellType type) throws CellException {
         if(c.getRow() >= height || c.getRow() < 0 || c.getCol() >= width || c.getCol() < 0){
             throw new CellException(c, "This coordinate is not a point of the labyrinth.");
-        } else if(type.equals(CellType.START)){
-            c = getPlayerPosition();
         }
-        type = c.getCellType();
+        //labyrinth[c.getCol()][c.getRow()] = type;
     }
 
     @Override
@@ -95,7 +95,8 @@ public class LabyrinthImpl implements Labyrinth {
 
     @Override
     public boolean hasPlayerFinished() {
-        if(getPlayerPosition().getCellType().equals(CellType.END)){
+        Coordinate c = getPlayerPosition();
+        if(labyrinth[c.getCol()][c.getRow()].equals(CellType.END)){
             return true;
         }
         return false;
@@ -113,7 +114,7 @@ public class LabyrinthImpl implements Labyrinth {
 
     @Override
     public void movePlayer(Direction direction) throws InvalidMoveException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
     }
 
 }
